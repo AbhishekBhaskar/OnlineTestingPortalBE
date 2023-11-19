@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import com.otp.be.modal.Quiz;
 import com.otp.be.modal.Score;
 import com.otp.be.modal.User;
 import com.otp.be.modal.UserQuiz;
+import com.otp.be.repository.QuizRepository;
 import com.otp.be.services.QuestionsService;
 import com.otp.be.services.QuizService;
 import com.otp.be.services.ScoreService;
@@ -141,7 +143,9 @@ public class ApplicationController {
 					resQuizObject.put("totalMarks", quizDetails.get(j).getTotalMarks());
 				}
 			}
-			filteredQuizByUserIdList.add(resQuizObject);
+			if (resQuizObject.size() > 0) {
+				filteredQuizByUserIdList.add(resQuizObject);
+			}
 		}
 		return filteredQuizByUserIdList;
 	}
@@ -171,5 +175,10 @@ public class ApplicationController {
 		int maxId = (idList.size() > 0) ? Collections.max(idList) : 0;
 		score.setScoreId(maxId+1);
 		return scoreService.saveScore(score);
+	}
+	
+	@DeleteMapping("/deleteQuizById/{quizId}")
+	public void deleteQuizById(@PathVariable int quizId) {
+		quizService.deleteQuizById(quizId);
 	}
 }
